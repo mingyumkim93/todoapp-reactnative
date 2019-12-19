@@ -6,13 +6,8 @@ const { width, height } = Dimensions.get("window");
 export default function ToDo(props) {
 
     const [isEditing, setIsEditing] = useState(false);
-    const [isCompleted, setIsCompleted] = useState(false);
     const [toDoValue, setToDoValue] = useState("");
-
-    function toggleComplete () {
-        setIsCompleted(!isCompleted)
-        console.log(props.id)
-    };
+    const {isCompleted, text, id, deleteToDo, toggleCompleteToDo} = props;
     
     function startEditing (text) {
         setToDoValue(text)
@@ -24,14 +19,14 @@ export default function ToDo(props) {
     };
     
     function controlInput (changedText) {
-        setToDoValue(changedText)
+        setToDoValue(changedText);
     }
 
     return (
         <View style={styles.container}>
 
             <View style={styles.column}>
-                <TouchableOpacity onPress={() => toggleComplete() }>
+                <TouchableOpacity onPress={() => {console.log(isCompleted); toggleCompleteToDo(id);} }>
                     <View style={[styles.circle, isCompleted ? styles.completedCircle : styles.uncompletedCircle]} />
                 </TouchableOpacity>
                 {isEditing ? (
@@ -44,13 +39,13 @@ export default function ToDo(props) {
                         onBlur={() => finishEditing()}
                     />
                 ) : (
-                        <Text style={[styles.text, isCompleted ? styles.completedText : styles.uncompletedText]}> {props.text} </Text>
+                        <Text style={[styles.text, isCompleted ? styles.completedText : styles.uncompletedText]}> {text} </Text>
                     )}
             </View>
 
             {isEditing ? (
                 <View style={styles.actions}>
-                    <TouchableOpacity onPressOut={() => finishEditing(props.text)}>
+                    <TouchableOpacity onPressOut={() => finishEditing(text)}>
                         <View style={styles.actionContainer}>
                             <Text style={styles.actionText}>✔</Text>
                         </View>
@@ -58,12 +53,12 @@ export default function ToDo(props) {
                 </View>
             ) : (
                     <View style={styles.actions}>
-                        <TouchableOpacity onPressOut={() => startEditing(props.text)}>
+                        <TouchableOpacity onPressOut={() => startEditing(text)}>
                             <View style={styles.actionContainer}>
                                 <Text style={styles.actionText}>✎</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPressOut={() => props.deleteToDo(props.id)}>
+                        <TouchableOpacity onPressOut={() => deleteToDo(id)}>
                             <View style={styles.actionContainer}>
                                 <Text style={styles.actionText}>❌</Text>
                             </View>
