@@ -7,7 +7,7 @@ export default function ToDo(props) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [toDoValue, setToDoValue] = useState("");
-    const {isCompleted, text, id, deleteToDo, toggleCompleteToDo} = props;
+    const {isCompleted, text, id, deleteToDo, toggleCompleteToDo, updateToDo} = props;
     
     function startEditing (text) {
         setToDoValue(text)
@@ -16,6 +16,7 @@ export default function ToDo(props) {
     
     function finishEditing () {
         setIsEditing(false);
+        updateToDo(id, toDoValue)
     };
     
     function controlInput (changedText) {
@@ -26,7 +27,7 @@ export default function ToDo(props) {
         <View style={styles.container}>
 
             <View style={styles.column}>
-                <TouchableOpacity onPress={() => {console.log(isCompleted); toggleCompleteToDo(id);} }>
+                <TouchableOpacity onPress={() => toggleCompleteToDo(id) }>
                     <View style={[styles.circle, isCompleted ? styles.completedCircle : styles.uncompletedCircle]} />
                 </TouchableOpacity>
                 {isEditing ? (

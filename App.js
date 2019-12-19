@@ -66,6 +66,14 @@ export default function App() {
     handleUpdate();
   };
 
+  updateToDo = (id, text) => {
+    const newToDos = toDos;
+    newToDos[id].text = text;
+    setToDos(newToDos);
+    //todo: find way to remove force update
+    handleUpdate();
+  }
+
   if (!loadedToDos) {
     return <AppLoading />;
   }
@@ -87,7 +95,7 @@ export default function App() {
         />
         <ScrollView contentContainerStyle={styles.toDos}>
           {Object.values(toDos).map(toDo => (
-            <ToDo key={toDo.id} {...toDo} deleteToDo={deleteToDo} toggleCompleteToDo={toggleCompleteToDo}/>
+            <ToDo key={toDo.id} {...toDo} deleteToDo={deleteToDo} toggleCompleteToDo={toggleCompleteToDo} updateToDo= {updateToDo}/>
           ))}
         </ScrollView>
       </View>
