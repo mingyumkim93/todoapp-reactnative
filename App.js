@@ -10,18 +10,28 @@ export default function App() {
   const [newToDo, setNewToDo] = useState("");
   const [loadedToDos, setLoadedToDos] = useState(false);
   const [toDos, setToDos] = useState({});
+  const [,setState] = useState();
 
-  useEffect(()=>_loadToDos(), []);
+  useEffect(()=>loadToDos(), []);
 
-  _controlNewToDo = text => {
+  function handleUpdate() {
+    setState({});
+  }
+
+  controlNewToDo = text => {
     setNewToDo(text);
   }
 
-  _loadToDos = () => {
+  loadToDos = () => {
     setLoadedToDos(true);
   }
 
-  _addToDo = () => {
+  deleteToDo = (id) => {
+    delete toDos[id];
+    handleUpdate();
+  }
+
+  addToDo = () => {
     if(newToDo !== ""){
       const ID = uuidv1();
       const newToDosObject = {
@@ -33,10 +43,10 @@ export default function App() {
           createdAt: Date.now()
         }
       };
-      setToDos({...newToDosObject})
+      setToDos(newToDosObject);
       setNewToDo("");
     }
-
+    
   }
 
   if(!loadedToDos){
@@ -52,14 +62,14 @@ export default function App() {
         style={styles.input} 
         placeholder="New To Do" 
         value={newToDo} 
-        onChangeText={this._controlNewToDo} 
+        onChangeText={(changedText) => controlNewToDo(changedText)} 
         placeholderTextColor={"#999"} 
         returnKyType={"Done"} 
         autoCorrect={false}
-        onSubmitEditing={this._addToDo}
+        onSubmitEditing={() => addToDo()}
         />
         <ScrollView contentContainerStyle={styles.toDos}>
-          <ToDo text={"Hello I'm a To Do"}/>
+          {Object.values(toDos).map(toDo=> <ToDo key={toDo.id} {...toDo} deleteToDo = {deleteToDo}/>)}
         </ScrollView>
       </View>
     </View>
