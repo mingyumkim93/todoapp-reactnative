@@ -7,7 +7,8 @@ import {
   TextInput,
   Dimensions,
   Platform,
-  ScrollView
+  ScrollView,
+  AsyncStorage
 } from "react-native";
 import { AppLoading } from "expo";
 import ToDo from "./ToDo";
@@ -19,26 +20,38 @@ export default function App() {
   const [newToDo, setNewToDo] = useState("");
   const [loadedToDos, setLoadedToDos] = useState(false);
   const [toDos, setToDos] = useState({});
-  const [, setState] = useState();
 
-  useEffect(() => loadToDos(), []);
+  useEffect(() => {
+    loadToDos = async () => {
+      try {
+        const toDos = await AsyncStorage.getItem("toDos");
+        const parsedToDos = JSON.parse(toDos);
+        setToDos(parsedToDos);
+      } catch (err) {
+        console.log(err);
+      }
+      setLoadedToDos(true);
+    };
+    loadToDos();
+  }, []);
 
-  handleUpdate = () => {
-    setState({});
+  useEffect(() => {
+    saveToDosInDisk();
+  }, [toDos]);
+
+  saveToDosInDisk = () => {
+    AsyncStorage.setItem("toDos", JSON.stringify(toDos));
+    console.log("data saved!!!!!!!!!");
   };
 
   controlNewToDo = text => {
     setNewToDo(text);
   };
 
-  loadToDos = () => {
-    setLoadedToDos(true);
-  };
-
   deleteToDo = id => {
     delete toDos[id];
-    //todo: find way to remove force update
-    handleUpdate();
+    const newToDos = {...toDos};
+    setToDos(newToDos);
   };
 
   addToDo = () => {
@@ -59,24 +72,20 @@ export default function App() {
   };
 
   toggleCompleteToDo = id => {
-    const newToDos = toDos;
-    newToDos[id].isCompleted = !toDos[id].isCompleted;
+    const newToDos = {...toDos};
+    newToDos[id].isCompleted = !newToDos[id].isCompleted
     setToDos(newToDos);
-    //todo: find way to remove force update
-    handleUpdate();
   };
 
   updateToDo = (id, text) => {
-    const newToDos = toDos;
+    const newToDos = {...toDos};
     newToDos[id].text = text;
     setToDos(newToDos);
-    //todo: find way to remove force update
-    handleUpdate();
-  }
+  };
 
   if (!loadedToDos) {
     return <AppLoading />;
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -94,14 +103,22 @@ export default function App() {
           onSubmitEditing={() => addToDo()}
         />
         <ScrollView contentContainerStyle={styles.toDos}>
-          {Object.values(toDos).map(toDo => (
-            <ToDo key={toDo.id} {...toDo} deleteToDo={deleteToDo} toggleCompleteToDo={toggleCompleteToDo} updateToDo= {updateToDo}/>
-          ))}
+          {Object.values(toDos)
+            .reverse()
+            .map(toDo => (
+              <ToDo
+                key={toDo.id}
+                {...toDo}
+                deleteToDo={deleteToDo}
+                toggleCompleteToDo={toggleCompleteToDo}
+                updateToDo={updateToDo}
+              />
+            ))}
         </ScrollView>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
