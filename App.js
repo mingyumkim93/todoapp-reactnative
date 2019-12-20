@@ -26,7 +26,7 @@ export default function App() {
       try {
         const toDos = await AsyncStorage.getItem("toDos");
         const parsedToDos = JSON.parse(toDos);
-        setToDos(parsedToDos);
+        setToDos(parsedToDos || {});
       } catch (err) {
         console.log(err);
       }
@@ -101,6 +101,7 @@ export default function App() {
           returnKyType={"Done"}
           autoCorrect={false}
           onSubmitEditing={() => addToDo()}
+          //underlineColorAndroid={"transparent"}
         />
         <ScrollView contentContainerStyle={styles.toDos}>
           {Object.values(toDos)

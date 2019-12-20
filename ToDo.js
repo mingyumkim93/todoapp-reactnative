@@ -38,6 +38,7 @@ export default function ToDo(props) {
                         onChangeText={changedText=> controlInput(changedText)}
                         returnKeyType={"done"}
                         onBlur={() => finishEditing()}
+                        //underlineColorAndroid={"transparent"}
                     />
                 ) : (
                         <Text style={[styles.text, isCompleted ? styles.completedText : styles.uncompletedText]}> {text} </Text>
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth,
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     circle: {
         width: 30,
@@ -95,7 +96,8 @@ const styles = StyleSheet.create({
     text: {
         fontWeight: "600",
         fontSize: 20,
-        marginVertical: 20
+        marginVertical: 20,
+        textAlign:"left"
     },
     completedText: {
         color: "#bbb",
@@ -107,7 +109,6 @@ const styles = StyleSheet.create({
     column: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
         width: width / 2,
     },
     actions: {
